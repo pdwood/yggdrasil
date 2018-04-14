@@ -1,0 +1,23 @@
+Basic design:
+-Tree structure
+    -Left click on a statement
+        -show rules menu
+            -rules divided into submenus
+        -highlight clicked statement in green
+        -highlight premises in red, consequents in blue,
+    -Right click on a statment
+        -set as premmise for the current statement
+            -highlight in red
+        -clicking a premise will unset it
+-Top menu
+    -File
+        -Save
+        -Save as
+        -open
+        -new
+    -Tree
+        -Verify
+    -Help
+        -Instructions
+        -Shortcuts
+        -Bugs/Fixes
