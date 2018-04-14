@@ -2,7 +2,12 @@ package logic;
 
 import java.util.Set;
 
-public class AtomicStatement{
+public class AtomicStatement extends AbstractStatement{
+	
+	public AtomicStatement(char c){
+		
+	}
+	
 	public boolean evaluate(Set<String> context){
 		return context.contains(this.toString());
 	}

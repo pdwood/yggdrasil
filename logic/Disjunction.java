@@ -3,8 +3,8 @@ package logic;
 import java.util.Set;
 
 public class Disjunction extends AbstractStatement{
-	public Disjunction(Set<String> s){
-		
+	public Disjunction(Set<AbstractStatement> disjuncts){
+		this.disjuncts = disjuncts;
 	}
 	
 	private Set<AbstractStatement> disjuncts;
