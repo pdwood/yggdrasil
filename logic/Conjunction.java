@@ -17,4 +17,6 @@ public class Conjunction extends AbstractStatement{
 		for(AbstractStatement s : conjuncts) if (!s.evaluate(context)) return false;
 		return true;
 	}
+	
+	public Set<AbstractStatement> getConjuncts(){ return conjuncts; }
 }

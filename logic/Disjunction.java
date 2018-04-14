@@ -17,4 +17,6 @@ public class Disjunction extends AbstractStatement{
 		for(AbstractStatement s : disjuncts) if (s.evaluate(context)) return true;
 		return false;
 	}
+	
+	public Set<AbstractStatement> getDisjuncts(){ return disjuncts; }
 }

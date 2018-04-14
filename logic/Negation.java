@@ -15,6 +15,9 @@ public class Negation extends AbstractStatement{
 	public boolean equals(Object o){
 		return (o instanceof Negation) && interior.equals(((Negation)o ).interior);
 	}
+	
+	public AbstractStatement getInterior(){return interior;}
+	
 	public boolean contradicts(AbstractStatement that){
 		return that.equals(interior);
 	}
