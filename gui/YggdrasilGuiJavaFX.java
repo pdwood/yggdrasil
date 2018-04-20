@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package yggdrasil_gui;
 
 import javafx.application.Application;
@@ -12,6 +8,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.SubScene;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,11 +19,13 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 /**
@@ -41,7 +41,8 @@ public class YggdrasilGuiJavaFX extends Application {
     private double nodeX = 0;
     private double nodeY = 0;
     
-    
+    double pants_node_spacing = 2;
+    double pants_node_width = 100;
     
     BorderPane borderpane;
     VBox pants;
@@ -50,15 +51,49 @@ public class YggdrasilGuiJavaFX extends Application {
         stage.setTitle("Yggdrasil");
         
         borderpane = new BorderPane();
+        
         pants = new VBox();
-        pants.setPrefSize(100, 100);
-       
-        String vb_border = "-fx-border-color: black;\n" +
+        //pants.setPrefSize(100, 80);
+        pants.setAlignment(Pos.CENTER);
+        
+        // Initialize text entry and textbox properties;
+        TextField enter_st = new TextField("Enter Statement");
+        enter_st.setMaxWidth(pants_node_width);
+        
+        // Buttons and button properties;
+        double button_width = (pants_node_width / 3) - pants_node_spacing;
+        Button close_br = new Button("X");
+        close_br.setPrefWidth(button_width);
+        Button open_br = new Button("O");
+        open_br.setPrefWidth(button_width);
+        Button more_br = new Button("+");
+        more_br.setPrefWidth(button_width);
+            // Button Tooltips (Hover Over)
+        Tooltip close_br_tt = new Tooltip("Close Branch");
+        Tooltip open_br_tt = new Tooltip("Open Branch");
+        Tooltip more_br_tt = new Tooltip("New Branch");
+        
+
+        HBox hb_buttons = new HBox();
+        hb_buttons.getChildren().addAll(close_br, open_br, more_br);
+        hb_buttons.setSpacing(pants_node_spacing);
+        hb_buttons.setAlignment(Pos.CENTER);
+
+        pants.getChildren().addAll(enter_st, hb_buttons);
+        String vb_border = "-fx-border-color: grey;\n" +
                            "-fx-border-insets: 5;\n" +
-                           "-fx-border-width: 2;\n" +
+                           "-fx-border-width: 1;\n" +
                            "-fx-border-style: solid;\n"; 
  
-        pants.setStyle(vb_border);/*
+        pants.setStyle(vb_border);
+        pants.setPadding(new Insets(pants_node_spacing, pants_node_spacing, 
+                                    pants_node_spacing, pants_node_spacing));
+        pants.setSpacing(pants_node_spacing);
+        pants.setLayoutX(120);
+        pants.setLayoutY(50);
+        
+        
+        /*
         vbox.getChildren().addAll(new Button("Add Statement"), new Button("New Branch"), new Button("Terminate"));
         m_Pants.getChildren().add(vbox); */
         
@@ -66,6 +101,9 @@ public class YggdrasilGuiJavaFX extends Application {
         //root.getChildren().add();
         
         Group root = new Group();
+        
+        SubScene subscene = new SubScene(root, 300, 300);
+        
         MenuBar menubar = new MenuBar();
         menubar.prefWidthProperty().bind(stage.widthProperty());
         
@@ -152,7 +190,7 @@ public class YggdrasilGuiJavaFX extends Application {
         
         Scene scene = new Scene(root, 400, 400);
         root.getChildren().add(borderpane);
-        //root.getChildren().add(pants);
+        root.getChildren().add(pants);
         
         stage.setScene(scene);
         stage.show();
