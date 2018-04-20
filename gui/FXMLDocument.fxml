@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.embed.swing.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxapplication2.FXMLDocumentController">
+   <top>
+      <VBox prefHeight="89.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Save" />
+                    <MenuItem mnemonicParsing="false" text="Save As" />
+                    <MenuItem mnemonicParsing="false" text="Open" />
+                    <MenuItem mnemonicParsing="false" text="New" />
+                    <MenuItem mnemonicParsing="false" text="SELF DESTRUCT" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Tree">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Verify" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Instructions" />
+                    <MenuItem mnemonicParsing="false" text="Shortcuts" />
+                    <MenuItem mnemonicParsing="false" text="Bugs / Fixes" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <HBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="44.0" prefWidth="189.0" text="Create Line" />
+                  <Button mnemonicParsing="false" prefHeight="44.0" prefWidth="194.0" text="Remove Line" />
+                  <MenuButton mnemonicParsing="false" prefHeight="44.0" prefWidth="227.0" text="Choose Rule...">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="AND Intro" />
+                      <MenuItem mnemonicParsing="false" text="OR Intro" />
+                      <MenuItem mnemonicParsing="false" text="COND Intro" />
+                      <MenuItem mnemonicParsing="false" text="BIC Intro" />
+                      <MenuItem mnemonicParsing="false" text="NOT Intro" />
+                      <MenuItem mnemonicParsing="false" text="CONTR Intro" />
+                      
+                      <MenuItem mnemonicParsing="false" text="AND Elim" />
+                      <MenuItem mnemonicParsing="false" text="OR Elim" />
+                      <MenuItem mnemonicParsing="false" text="COND Elim" />
+                      <MenuItem mnemonicParsing="false" text="BIC Elim" />
+                      <MenuItem mnemonicParsing="false" text="NOT Elim" />
+                      <MenuItem mnemonicParsing="false" text="CONTR Elim" />
+                    </items>
+                  </MenuButton>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <SubScene height="463.0" width="481.0" BorderPane.alignment="CENTER">
+        <root>
+          <Region />
+        </root>
+      </SubScene>
+   </center>
+</BorderPane>
