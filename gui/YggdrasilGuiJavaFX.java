@@ -41,7 +41,7 @@ public class YggdrasilGuiJavaFX extends Application {
     private double nodeX = 0;
     private double nodeY = 0;
     
-    double pants_node_spacing = 2;
+    double pants_node_spacing = 5;
     double pants_node_width = 100;
     
     BorderPane borderpane;
@@ -69,10 +69,12 @@ public class YggdrasilGuiJavaFX extends Application {
         Button more_br = new Button("+");
         more_br.setPrefWidth(button_width);
             // Button Tooltips (Hover Over)
-        Tooltip close_br_tt = new Tooltip("Close Branch");
-        Tooltip open_br_tt = new Tooltip("Open Branch");
-        Tooltip more_br_tt = new Tooltip("New Branch");
-        
+        Tooltip cb_tt = new Tooltip("Close Branch");
+        Tooltip ob_tt = new Tooltip("Open Branch");
+        Tooltip mb_tt = new Tooltip("New Branch");
+        Tooltip.install(close_br, cb_tt);
+        Tooltip.install(open_br, ob_tt);
+        Tooltip.install(more_br, mb_tt);
 
         HBox hb_buttons = new HBox();
         hb_buttons.getChildren().addAll(close_br, open_br, more_br);
@@ -186,7 +188,9 @@ public class YggdrasilGuiJavaFX extends Application {
         
         menubar.getMenus().addAll(file_menu, tree_menu, help_menu);
         
-        
+        // Add event handlesers
+        pants.setOnMousePressed(mouseClick());
+        pants.setOnMouseDragged(mouseDrag());
         
         Scene scene = new Scene(root, 400, 400);
         root.getChildren().add(borderpane);
@@ -195,7 +199,43 @@ public class YggdrasilGuiJavaFX extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
+    
+    private EventHandler<MouseEvent> mouseClick() {
+        EventHandler<MouseEvent> mouseClickHandler = new EventHandler<MouseEvent>() {
+            // Get the current mouse coordinates, relative to the scene
+            public void handle(MouseEvent event){
+                if (event.getButton() == MouseButton.PRIMARY){
+                   mouseX = event.getSceneX();
+                   mouseY = event.getSceneY();
+                   
+                   // Get node coordinates
+                   nodeX = pants.getLayoutX();
+                   nodeY = pants.getLayoutY();
+                }
+            } 
+        };
+        return mouseClickHandler;
+    }
+    private EventHandler<MouseEvent> mouseDrag(){
+        EventHandler<MouseEvent> mouseDragHandler = new EventHandler<MouseEvent>(){
+            public void handle(MouseEvent event){
+                if (event.getButton() == MouseButton.PRIMARY){
+                    // Find the difference in coordinates.
+                    double difX = event.getSceneX() - mouseX;
+                    double difY = event.getSceneY() - mouseY;
+                    // Update pants coordinates.
+                    nodeX += difX;
+                    nodeY += difY;
+                    pants.setLayoutX(nodeX);
+                    pants.setLayoutY(nodeY);
+                    // Update mouse coordinates.
+                    mouseX = event.getSceneX();
+                    mouseY = event.getSceneY();
+                }
+            }
+        };
+        return mouseDragHandler;
+    }
     /**
      * @param args the command line arguments
      */
