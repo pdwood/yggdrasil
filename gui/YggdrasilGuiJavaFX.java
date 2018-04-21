@@ -44,6 +44,8 @@ public class YggdrasilGuiJavaFX extends Application {
     double pants_node_spacing = 5;
     double pants_node_width = 100;
     
+    String text_highlight = "white";
+    
     BorderPane borderpane;
     VBox pants;
     @Override
@@ -51,14 +53,43 @@ public class YggdrasilGuiJavaFX extends Application {
         stage.setTitle("Yggdrasil");
         
         borderpane = new BorderPane();
+       
+        //Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+        //root.getChildren().add();
         
-        pants = new VBox();
+        Group root = new Group();
+        
+        SubScene subscene = new SubScene(root, 300, 300);
+        
+        // Make menu bar
+        MenuBar menubar = makeMenuBar();
+        menubar.prefWidthProperty().bind(stage.widthProperty());
+        // Make some pants
+        pants = makePants();
+        
+        borderpane.setTop(menubar);
+        
+        // Add event handlesers
+        pants.setOnMousePressed(mouseClick());
+        pants.setOnMouseDragged(mouseDrag());
+        
+        Scene scene = new Scene(root, 600, 500);
+        root.getChildren().add(pants);
+        root.getChildren().add(borderpane);
+        
+        stage.setScene(scene);
+        stage.show();
+    }
+    
+    private VBox makePants(){
+        VBox pants = new VBox();
         //pants.setPrefSize(100, 80);
         pants.setAlignment(Pos.CENTER);
         
         // Initialize text entry and textbox properties;
         TextField enter_st = new TextField("Enter Statement");
         enter_st.setMaxWidth(pants_node_width);
+        enter_st.setStyle("-fx-control-inner-background: " + text_highlight);
         
         // Buttons and button properties;
         double button_width = (pants_node_width / 3) - pants_node_spacing;
@@ -94,23 +125,11 @@ public class YggdrasilGuiJavaFX extends Application {
         pants.setLayoutX(120);
         pants.setLayoutY(50);
         
-        
-        /*
-        vbox.getChildren().addAll(new Button("Add Statement"), new Button("New Branch"), new Button("Terminate"));
-        m_Pants.getChildren().add(vbox); */
-        
-        //Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
-        //root.getChildren().add();
-        
-        Group root = new Group();
-        
-        SubScene subscene = new SubScene(root, 300, 300);
-        
+        return pants;
+    }
+    
+    private MenuBar makeMenuBar(){
         MenuBar menubar = new MenuBar();
-        menubar.prefWidthProperty().bind(stage.widthProperty());
-        
-        borderpane.setTop(menubar);
-        
         // File Menu /////////////
         Menu file_menu = new Menu("File");
         
@@ -185,19 +204,8 @@ public class YggdrasilGuiJavaFX extends Application {
         });
         
         help_menu.getItems().addAll(instructions, menu_shortcuts, bugs_fixes);
-        
         menubar.getMenus().addAll(file_menu, tree_menu, help_menu);
-        
-        // Add event handlesers
-        pants.setOnMousePressed(mouseClick());
-        pants.setOnMouseDragged(mouseDrag());
-        
-        Scene scene = new Scene(root, 400, 400);
-        root.getChildren().add(pants);
-        root.getChildren().add(borderpane);
-        
-        stage.setScene(scene);
-        stage.show();
+        return menubar;
     }
     
     private EventHandler<MouseEvent> mouseClick() {
