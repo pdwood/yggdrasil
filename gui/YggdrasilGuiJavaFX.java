@@ -193,8 +193,8 @@ public class YggdrasilGuiJavaFX extends Application {
         pants.setOnMouseDragged(mouseDrag());
         
         Scene scene = new Scene(root, 400, 400);
-        root.getChildren().add(borderpane);
         root.getChildren().add(pants);
+        root.getChildren().add(borderpane);
         
         stage.setScene(scene);
         stage.show();
