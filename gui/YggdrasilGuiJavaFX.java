@@ -18,6 +18,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCombination;
@@ -91,6 +92,8 @@ public class YggdrasilGuiJavaFX extends Application {
         enter_st.setMaxWidth(pants_node_width);
         enter_st.setStyle("-fx-control-inner-background: " + text_highlight);
         
+        enter_st.setContextMenu(makeTextFieldMenus());
+        
         // Buttons and button properties;
         double button_width = (pants_node_width / 3) - pants_node_spacing;
         Button close_br = new Button("X");
@@ -122,10 +125,140 @@ public class YggdrasilGuiJavaFX extends Application {
         pants.setPadding(new Insets(pants_node_spacing, pants_node_spacing, 
                                     pants_node_spacing, pants_node_spacing));
         pants.setSpacing(pants_node_spacing);
+        // Initial X and Y.
         pants.setLayoutX(120);
         pants.setLayoutY(50);
         
         return pants;
+    }
+    
+    private ContextMenu makeTextFieldMenus(){
+        ContextMenu rcl_menu = new ContextMenu();
+        
+        MenuItem premise = new MenuItem("Premise");
+        premise.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify that statement is a premise, action, etc
+            }
+        });
+        
+        // Make Intro and Elim submenus
+        Menu intro = new Menu("Intro");
+        MenuItem and_i = new MenuItem("∧");
+        and_i.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify And Intro
+            }
+        });
+        MenuItem or_i = new MenuItem("∨");
+        or_i.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Or Intro
+            }
+        });
+        MenuItem neg_i = new MenuItem("¬");
+        neg_i.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Negation Intro
+            }
+        });
+        MenuItem cont_i = new MenuItem("⊥");
+        cont_i.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Contradiction Intro
+            }
+        });
+        MenuItem cond_i = new MenuItem("→");
+        cond_i.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Conditional Intro
+            }
+        });
+        MenuItem bic_i = new MenuItem("↔");
+        bic_i.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Biconditional Intro
+            }
+        });
+        MenuItem eq_i = new MenuItem("=");
+        eq_i.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify = Intro
+            }
+        });
+        MenuItem unq_i = new MenuItem("∀");
+        unq_i.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Universal Quantifier Intro
+            }
+        });
+        MenuItem exq_i = new MenuItem("∃");
+        exq_i.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Existential Quantifier Intro
+            }
+        });
+        intro.getItems().addAll(and_i, or_i, neg_i, cont_i, cond_i, bic_i, eq_i, unq_i, exq_i);
+        
+        Menu elim = new Menu("Elim");
+        MenuItem and_e = new MenuItem("∧");
+        and_e.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify And Elim
+            }
+        });
+        MenuItem or_e = new MenuItem("∨");
+        or_e.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Or Elim
+            }
+        });
+        MenuItem neg_e = new MenuItem("¬");
+        neg_e.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Negation Elim
+            }
+        });
+        MenuItem cont_e = new MenuItem("⊥");
+        cont_e.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Contradiction Elim
+            }
+        });
+        MenuItem cond_e = new MenuItem("→");
+        cond_e.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Conditional Elim
+            }
+        });
+        MenuItem bic_e = new MenuItem("↔");
+        bic_e.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Biconditional Elim
+            }
+        });
+        MenuItem eq_e = new MenuItem("=");
+        eq_e.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify = Elim
+            }
+        });
+        MenuItem unq_e = new MenuItem("∀");
+        unq_e.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Universal Quantifier Elim
+            }
+        });
+        MenuItem exq_e = new MenuItem("∃");
+        exq_e.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                // Specify Existential Quantifier Elim
+            }
+        });
+        elim.getItems().addAll(and_e, or_e, neg_e, cont_e, cond_e, bic_e, eq_e, unq_e, exq_e);
+        
+        rcl_menu.getItems().addAll(premise, intro, elim);
+        return rcl_menu;
     }
     
     private MenuBar makeMenuBar(){
