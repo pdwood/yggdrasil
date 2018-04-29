@@ -3,8 +3,8 @@ package logic;
 import java.util.Set;
 
 public class Conditional extends AbstractStatement{
-	private AbstractStatement consequent;
-	private AbstractStatement antecedent;
+	public final AbstractStatement consequent;
+	public final AbstractStatement antecedent;
 	public boolean evaluate(Set<String> context){
 		return !antecedent.evaluate(context) || consequent.evaluate(context);
 	}
@@ -17,7 +17,4 @@ public class Conditional extends AbstractStatement{
 		this.antecedent=a;
 		this.consequent=c;
 	}
-	
-	public AbstractStatement getAntecedent(){return antecedent;}
-	public AbstractStatement getConsequent(){return consequent;}
 }

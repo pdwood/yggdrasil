@@ -2,8 +2,6 @@ package logic;
 
 import java.util.Set;
 
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Operators;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -59,12 +57,13 @@ public abstract class AbstractStatement{
 		return s.substring(start, start+length);
 	}
 
-	public static AbstractStatement createFromString(String s){
+	private static AbstractStatement createFromTransformedString(String s){
 		System.out.println("Creating from: "+s);
 
 		//Strip parentheses surrounding the entire expression.
 		s = stripOuterParens(s);
 		System.out.println("After parens stripped: "+s);
+		if(s.length() == 1 && s.charAt(0)=='⊥') return FALSE;
 
 		ArrayList<AbstractStatement> juncts = new ArrayList<AbstractStatement>(); 
 		char operator = 0;
@@ -75,7 +74,7 @@ public abstract class AbstractStatement{
 				juncts.add(createFromString(parenString));
 				i+=parenString.length();
 			}
-			else if(c == '!'){
+			else if(c == '¬'){
 				i+=1;
 				String interiorString = enclosedParenString(s,i);//either 1 char or something enclosed by parens
 				juncts.add(new Negation(createFromString(interiorString)));
@@ -95,13 +94,13 @@ public abstract class AbstractStatement{
 		case 0:
 			out = juncts.get(0);
 			break;
-		case '&':
+		case '∧':
 			out = new Conjunction(new HashSet<AbstractStatement>(juncts));
 			break;
-		case '|':
+		case '∨':
 			out = new Disjunction(new HashSet<AbstractStatement>(juncts));
 			break;
-		case '$':
+		case '→':
 			if(juncts.size() == 2) out = new Conditional(juncts.get(0), juncts.get(1));
 			else return null;
 			break;
@@ -110,6 +109,22 @@ public abstract class AbstractStatement{
 		}
 		if(out != null) out.string = s;
 		return out;
+	}
+	
+	public static AbstractStatement createFromString(String s){
+		String newS = "";
+		for(int i=0;i<s.length();++i){
+			switch(s.charAt(i)){
+			case '&': newS += '∧'; break;
+			case '|': newS += '∨'; break;
+			case '~': newS += '¬'; break;
+			case '$': newS += '→'; break;
+			case '%': newS += '↔'; break;
+			case '^': newS += '⊥'; break;
+			default: newS += s.charAt(i);
+			}
+		}
+		return createFromTransformedString(newS);
 	}
 
 	@Override

@@ -30,4 +30,6 @@ public class TreeBranch {
 		return true;
 	}
 
+	public ArrayList<TreeBranch> getBranches(){ return branches; }
+
 }

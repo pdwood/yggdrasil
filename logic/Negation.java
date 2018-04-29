@@ -3,7 +3,7 @@ package logic;
 import java.util.Set;
 
 public class Negation extends AbstractStatement{
-	private AbstractStatement interior;
+	public final AbstractStatement interior;
 	
 	public Negation(AbstractStatement interior){
 		this.interior = interior;
