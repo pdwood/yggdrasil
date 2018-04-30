@@ -9,11 +9,19 @@ import gui.StepView;
 public class Step {
 
 	private AbstractStatement statement;
-	private Set<Link> inlinks;
-	private Set<Link> outlinks;
+	private Set<Link> premises;
+	private Set<Link> conclusions;
 	private StepView view;
 	private TreeBranch parent;
+	private Rule origin;
+	
+	public Step(StepView view){
+		this.view = view;
+		premises = new HashSet<Link>();
+		conclusions = new HashSet<Link>();
+	}
 
+	public void setStatement(String inputString){ this.statement = AbstractStatement.createFromString(inputString); }
 	public AbstractStatement getStatement(){ return statement; }
 	
 	public boolean isChecked(){
@@ -21,6 +29,16 @@ public class Step {
 				(statement instanceof Negation && ((Negation)statement).interior instanceof AtomicStatement)) return true;
 		return isCheckedInBranch(parent);
 	}
+	
+	public Set<Link> getPremises() { return premises; }
+	public Set<Link> getConclusions() { return conclusions; }
+	
+	public void addPremiseLink(Link link){ premises.add(link); }
+	public void addConclusionLink(Link link){ conclusions.add(link); }
+	
+	public StepView getView(){ return view; }
+
+	public Rule getOriginRule(){ return origin; }
 	
 	public boolean isCheckedInBranch(TreeBranch branch){
 		// For reasons of time constraints, we are only going to have the standard truth tree rules.
@@ -64,7 +82,7 @@ public class Step {
 	}
 	
 	public boolean decompRuleCheckedInBranch(TreeBranch branch, Set<AbstractStatement> conjuncts){
-		for(Link l : outlinks){
+		for(Link l : conclusions){
 			if(l.getConclusion().parent == branch && conjuncts.contains(l.getConclusion().statement)){
 				conjuncts.remove(l.getConclusion().statement);
 			}

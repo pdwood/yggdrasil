@@ -2,7 +2,7 @@ package gui;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
+//import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -10,27 +10,49 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
 import tree.Step;
+import tree.Link;
+import tree.Rule;
 
 public class StepView extends HBox{
 	
 	private Step contents;
 	
-    StepView(Pants containingPants){
+    public StepView(Pants containingPants){
         hb_row = makeTextView();  
         text_highlight = "white";
         selected = false;
         this.pants = containingPants;
+        this.contents = new Step(this);
     }
 
     private void select(){
+    	GuiMain.selected.deselect();
+    	GuiMain.selected = this;
+    	// TODO Reset colors of all other steps...
         selected = true;
-        text_highlight = "yellow";
+        text_highlight = "turquoise";
+        for(Link l : contents.getPremises()){
+        	l.getPremise().getView().text_highlight = "green";
+        	l.getPremise().getView().updateColor();
+        }
+        for(Link l : contents.getConclusions()){
+        	l.getPremise().getView().text_highlight = "purple";
+        	l.getPremise().getView().updateColor();
+        }
         updateColor();
     }
 
     private void deselect(){
         selected = false;
         text_highlight = "white";
+        for(Link l : contents.getPremises()){
+        	l.getPremise().getView().text_highlight = "white";
+        	l.getPremise().getView().updateColor();
+        }
+        for(Link l : contents.getConclusions()){
+        	l.getPremise().getView().text_highlight = "white";
+        	l.getPremise().getView().updateColor();
+        }
         updateColor();
     }
 
@@ -53,17 +75,17 @@ public class StepView extends HBox{
         rcl_menu.setMinWidth(1);
         rcl_menu.setMaxWidth(23);
 
-        ContextMenu ctx_menu = new ContextMenu();
+        /*ContextMenu ctx_menu = new ContextMenu();
         MenuItem select_st = new MenuItem("Select");
         ctx_menu.getItems().add(select_st);
         select_st.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent t){
-                text_highlight = "pink";
-                updateColor();
-
-            }
+                //text_highlight = "pink";
+                //updateColor();
+            	Link.createLink(GuiMain.selected.contents.getOriginRule(), this, GuiMain.selected.contents); 
+			}
         });
-        text_box.setContextMenu(ctx_menu);
+        text_box.setContextMenu(ctx_menu);*/
 
         MenuItem premise = new MenuItem("Premise");
         premise.setOnAction(new EventHandler<ActionEvent>(){
@@ -88,83 +110,25 @@ public class StepView extends HBox{
                 pants.removeStatement(StepView.this);
             }
         });
+        
+        
+        EventHandler<ActionEvent> selectRuleHandler = new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent t){
+                select();
+            }
+        };
 
         // Make Intro and Elim submenus
         Menu decomp = new Menu("Decomp. Rules");
-        MenuItem and_dc = new MenuItem("∧");
-        and_dc.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t){
-                // Select statement and enter "and_dc select" state
-                select();
-            }
-        });
-        MenuItem or_dc = new MenuItem("∨");
-        or_dc.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t){
-                select();
-                // Or...
-            }
-        });
-        MenuItem cond_dc = new MenuItem("→");
-        cond_dc.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t){
-                select();
-                // ''
-            }
-        });
-        MenuItem neg_and_dc = new MenuItem("¬∧");
-        neg_and_dc.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t){
-                select();
-                // ''
-            }
-        });
-        MenuItem neg_or_dc = new MenuItem("¬∨");
-        neg_or_dc.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t){
-                select();
-                // ''
-            }
-        });
-        MenuItem neg_cond_dc = new MenuItem("¬→");
-        neg_cond_dc.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t){
-                select();
-                // ''
-            }
-        });
-        MenuItem bic_dc = new MenuItem("↔");
-        bic_dc.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t){
-                select();
-                //
-            }
-        });
-        MenuItem neg_bic_dc = new MenuItem("¬↔");
-        neg_bic_dc.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t){
-                select();
-                //
-            }
-        });
-        MenuItem dneg_dc = new MenuItem("¬¬");
-        dneg_dc.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent t){
-                select();
-                //
-            }
-        });
-
-        decomp.getItems().addAll(and_dc, or_dc, cond_dc, neg_and_dc, neg_or_dc, neg_cond_dc, bic_dc, neg_bic_dc, dneg_dc);
+        
+        //for( Rule r : Rule.DECMP_RULES ){
+        	//MenuItem item = new MenuItem(r.shortName);
+        for(String r : Rule.DECMP_NAMES) {
+        	MenuItem item = new MenuItem(r);
+        	item.setOnAction(selectRuleHandler);
+        	decomp.getItems().add(item);
+        }
 
         rcl_menu.getItems().addAll(premise, contr, decomp, remove_st);
         return rcl_menu;
