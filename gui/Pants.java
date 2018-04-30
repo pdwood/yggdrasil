@@ -12,9 +12,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class Pants extends VBox{
-	
+
 	public static final double NODE_WIDTH = 130, NODE_SPACING = 5;
-	
+
     Pants(Drawer drawer){
         button_width = (NODE_WIDTH / 3) - NODE_SPACING;
         statements = new VBox();
@@ -36,7 +36,7 @@ public class Pants extends VBox{
 
         Button finish_br = new Button("✓");
         finish_br.setPrefWidth(button_width);
-        // Stand-in for deselect.  Remove 
+        // Stand-in for deselect.  Remove
         finish_br.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e){
                 //
@@ -75,36 +75,48 @@ public class Pants extends VBox{
                            "-fx-border-insets: 5;\n" +
                            "-fx-border-width: 1;\n" +
                            "-fx-border-radius: 3;\n" +
-                           "-fx-border-style: solid;\n"; 
+                           "-fx-border-style: solid;\n";
 
         pants.setStyle(vb_border);
-        pants.setPadding(new Insets(NODE_SPACING, NODE_SPACING, 
+        pants.setPadding(new Insets(NODE_SPACING, NODE_SPACING,
                                     NODE_SPACING, NODE_SPACING));
         pants.setSpacing(NODE_SPACING);
 
         return pants;
     }
-    
+
     private void addChild(){
         Pants child = new Pants(drawer);
         children.addElement(child);
         child.visual.setLayoutX(visual.getLayoutX());
         updateChildLocations();
-        
+
         drawer.pane.getChildren().add(child.visual);
     }
-    
+
     private void updateChildLocations(){
-        // Consider the number of statements in the parent node (this) and shift the children down accordingly.
-        // Consider the number of children the parent contains and set their X coordinates accordingly, relative to the parent.
-        // Recursively call this on all children of children of the parent(this).
-        double starting_x = visual.getLayoutX() - (((NODE_WIDTH + 30) * children.size())/3);
-        for (Pants child : children){
-            child.visual.setLayoutY(visual.getLayoutY() + 90 + (num_statements * 26));
-            // 26 is the height of each statement object;
-            child.visual.setLayoutX(starting_x);
-            starting_x += (NODE_WIDTH + 30);
-        }
+			// Consider the number of statements in the parent node (this) and shift the children down accordingly.
+			// Consider the number of children the parent contains and set their X coordinates accordingly, relative to the parent.
+			// Recursively call this on all children of children of the parent(this).
+			double starting_x = visual.getLayoutX();
+							//visual.getLayoutX() - (((NODE_WIDTH + 30) * children.size())/3);
+			if (children.size() % 2 == 0){
+					starting_x -= (NODE_WIDTH / 2) + 30;
+					starting_x -= ((children.size() / 2) - 1.1) * (NODE_WIDTH + 30);
+			}
+			else{
+					starting_x -= (children.size() / 2) * (NODE_WIDTH + 30);
+			}
+
+			for (Pants child : children){
+					child.visual.setLayoutY(visual.getLayoutY() + 90 + (num_statements * 26));
+					// 26 is the height of each statement object;
+					child.visual.setLayoutX(starting_x);
+					starting_x += (NODE_WIDTH + 30);
+					if (!child.children.isEmpty()){
+							child.updateChildLocations();
+					}
+			}
     }
 
     public void addStatement(){
