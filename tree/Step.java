@@ -4,14 +4,14 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import logic.*;
-import gui.TreeStepView;
+import gui.StepView;
 
 public class Step {
 
 	private AbstractStatement statement;
 	private Set<Link> inlinks;
 	private Set<Link> outlinks;
-	private TreeStepView view;
+	private StepView view;
 	private TreeBranch parent;
 
 	public AbstractStatement getStatement(){ return statement; }
