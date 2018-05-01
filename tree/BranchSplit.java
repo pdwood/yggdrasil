@@ -5,7 +5,7 @@ import gui.BranchSplitView;
 
 public class BranchSplit extends AbstractBranchEnd {
 
-	private Set<TreeBranch> branches;
+	private Set<Branch> branches;
 	private BranchSplitView view;
 
 }

@@ -14,10 +14,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import logic.AbstractStatement;
-import logic.Conditional;
-import logic.Conjunction;
-import logic.Disjunction;
 import tree.Step;
 import tree.Link;
 import tree.Rule;
@@ -43,7 +39,7 @@ public class StepView{// extends HBox{
 		hb_row = makeTextView();
 		selected = false;
 		this.pants = containingPants;
-		this.contents = new Step(this);
+		this.contents = new Step(this,pants.getBranch());
 	}
 
 	public void select(){
@@ -91,6 +87,7 @@ public class StepView{// extends HBox{
 		removebtn.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
+				contents.removeFromBranch();
 				pants.removeStatement(StepView.this);
 			}
 		});
@@ -117,8 +114,9 @@ public class StepView{// extends HBox{
 			public void handle(MouseEvent event) {
 				if(event.getButton()==MouseButton.SECONDARY){//right click
 					//TODO toggle link, not just add
-					Link.createLink(GuiMain.selected.contents.getOriginRule(), StepView.this.contents, GuiMain.selected.contents);
-					updateColor(PREMISE_COLOR);
+					if(Link.createLink(GuiMain.selected.contents.getOriginRule(), StepView.this.contents, GuiMain.selected.contents)){
+						updateColor(PREMISE_COLOR);	
+					}
 					event.consume();
 				}else if(!selected) select();
 			}        	

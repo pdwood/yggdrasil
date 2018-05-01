@@ -12,17 +12,25 @@ public class Step {
 	private Set<Link> premises;
 	private Set<Link> conclusions;
 	private StepView view;
-	private TreeBranch parent;
+	private Branch parent;
 	private Rule origin;
 	
-	public Step(StepView view){
+	public Step(StepView view, Branch parent){
 		this.view = view;
+		this.parent = parent;
+		parent.addStep(this);
 		premises = new HashSet<Link>();
 		conclusions = new HashSet<Link>();
 	}
 
 	public void setStatement(String inputString){ this.statement = AbstractStatement.createFromString(inputString); }
 	public AbstractStatement getStatement(){ return statement; }
+	
+	public Branch getBranch(){ return parent; }
+	
+	public void removeFromBranch(){
+		parent.removeStep(this);
+	}
 	
 	public boolean isChecked(){
 		if(statement instanceof logic.AtomicStatement || 
@@ -40,7 +48,7 @@ public class Step {
 
 	public Rule getOriginRule(){ return origin; }
 	
-	public boolean isCheckedInBranch(TreeBranch branch){
+	public boolean isCheckedInBranch(Branch branch){
 		// For reasons of time constraints, we are only going to have the standard truth tree rules.
 		// Yggdrasil will be extensible with more rules, after this function and a few others are rewritten.
 		if(statement instanceof Conjunction){
@@ -77,11 +85,11 @@ public class Step {
 		return true;// ? or false?
 	}
 	
-	public boolean splitRuleCheckedInBranch(TreeBranch branch, Set<AbstractStatement> disjuncts){
+	public boolean splitRuleCheckedInBranch(Branch branch, Set<AbstractStatement> disjuncts){
 		return false; //TODO
 	}
 	
-	public boolean decompRuleCheckedInBranch(TreeBranch branch, Set<AbstractStatement> conjuncts){
+	public boolean decompRuleCheckedInBranch(Branch branch, Set<AbstractStatement> conjuncts){
 		for(Link l : conclusions){
 			if(l.getConclusion().parent == branch && conjuncts.contains(l.getConclusion().statement)){
 				conjuncts.remove(l.getConclusion().statement);
@@ -90,7 +98,7 @@ public class Step {
 		if(conjuncts.isEmpty()) return true;
 		else if(branch.getBranches().isEmpty()) return false; // some conjuncts remain, but no branches left
 		
-		for(TreeBranch b : branch.getBranches()){
+		for(Branch b : branch.getBranches()){
 			if(!decompRuleCheckedInBranch(b, new HashSet<AbstractStatement>(conjuncts))) return false;
 		}
 		return true;

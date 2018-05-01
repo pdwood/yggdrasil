@@ -25,8 +25,8 @@ public class SomeTests {
 			printExpressionAsHierarchy(((Negation)as).getInterior(),pad);
 		}else if(as instanceof Conditional){
 			System.out.println("if");
-			printExpressionAsHierarchy(((Conditional)as).getAntecedent(),pad);
-			printExpressionAsHierarchy(((Conditional)as).getConsequent(),pad);
+			printExpressionAsHierarchy(((Conditional)as).antecedent,pad);
+			printExpressionAsHierarchy(((Conditional)as).consequent,pad);
 		}else if(as == AbstractStatement.FALSE) System.out.println("false");
 		else if(as == AbstractStatement.TRUE) System.out.println("true");
 	}

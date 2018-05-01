@@ -10,12 +10,14 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
+import tree.Branch;
 
 public class Pants extends VBox{
 
 	public static final double NODE_WIDTH = 130, NODE_SPACING = 5;
 
-    Pants(Drawer drawer){
+    Pants(Drawer drawer, Branch branch){
+    	this.contents = branch; 
         button_width = (NODE_WIDTH / 3) - NODE_SPACING;
         statements = new VBox();
         statements.setSpacing(1);
@@ -24,6 +26,10 @@ public class Pants extends VBox{
 		lines = new ArrayList<Line>();
         num_statements = 0;
         this.drawer = drawer;
+    }
+    
+    public Branch getBranch(){
+    	return contents;
     }
 
     private VBox makePants(){
@@ -87,7 +93,8 @@ public class Pants extends VBox{
     }
 
     private void addChild(){
-        Pants child = new Pants(drawer);
+    	Branch branch = contents.addBranch();
+        Pants child = new Pants(drawer, branch);
         children.add(child);
         child.visual.setLayoutX(visual.getLayoutX());
 				drawer.pane.getChildren().add(child.visual);
@@ -143,6 +150,8 @@ public class Pants extends VBox{
         updateChildLocations();
     }
 
+    Branch contents;
+    
     double button_width;
     String text_highlight;
     boolean selected;
