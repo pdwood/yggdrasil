@@ -110,6 +110,7 @@ public class Pants extends VBox{
     public void addStatement(){
         StepView new_st = new StepView(this);
         statements.getChildren().add(new_st.hb_row);
+        new_st.select();
         num_statements++;
         updateChildLocations();
     }

@@ -60,6 +60,7 @@ public class GuiMain extends Application {
         drawer.pane.setOnMouseDragged(mouseDrag());
         
         Scene scene = new Scene(root, 600, 500);
+        scene.getStylesheets().add("ygg.css");
         root.getChildren().add(drawer.pane);
         root.getChildren().add(borderpane);
         
