@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 
 public class Pants extends VBox{
 
@@ -19,8 +20,8 @@ public class Pants extends VBox{
         statements = new VBox();
         statements.setSpacing(1);
         visual = makePants();
-        children = new ArrayList();
-				lines = new ArrayList();
+        children = new ArrayList<Pants>();
+		lines = new ArrayList<Line>();
         num_statements = 0;
         this.drawer = drawer;
     }
@@ -87,7 +88,7 @@ public class Pants extends VBox{
 
     private void addChild(){
         Pants child = new Pants(drawer);
-        children.addElement(child);
+        children.add(child);
         child.visual.setLayoutX(visual.getLayoutX());
 				drawer.pane.getChildren().add(child.visual);
 				Line line = new Line();
@@ -148,7 +149,8 @@ public class Pants extends VBox{
     VBox visual;
     VBox statements;
     int num_statements;
-    Vector<Pants> children;
+    ArrayList<Pants> children;
+    ArrayList<Line> lines;
     Drawer drawer;
 
 }
