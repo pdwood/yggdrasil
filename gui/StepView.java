@@ -1,7 +1,6 @@
 package gui;
 
 import java.nio.CharBuffer;
-import java.util.HashSet;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,7 +14,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import tree.Step;
-import tree.Link;
 import tree.Rule;
 
 public class StepView{// extends HBox{
@@ -49,11 +47,11 @@ public class StepView{// extends HBox{
 		rules_menu.setVisible(true);
 		text_box.setDisable(false);
 		selected = true;
-		for(Link l : contents.getPremises()){
-			l.getPremise().getView().updateColor(PREMISE_COLOR);
+		for(Step s : contents.getPremises()){
+			s.getView().updateColor(PREMISE_COLOR);
 		}
-		for(Link l : contents.getConclusions()){
-			l.getConclusion().getView().updateColor(CONCLUSION_COLOR);
+		for(Step s : contents.getConclusions()){
+			s.getView().updateColor(CONCLUSION_COLOR);
 		}
 		updateColor("turquoise");
 	}
@@ -64,11 +62,11 @@ public class StepView{// extends HBox{
 		rules_menu.setVisible(false);
 		text_box.setDisable(true);
 		//        text_box.setStyle("-fx-opacity: 1.0;");
-		for(Link l : contents.getPremises()){
-			l.getPremise().getView().updateColor(DEFAULT_COLOR);
+		for(Step s : contents.getPremises()){
+			s.getView().updateColor(DEFAULT_COLOR);
 		}
-		for(Link l : contents.getConclusions()){
-			l.getConclusion().getView().updateColor(DEFAULT_COLOR);
+		for(Step s : contents.getConclusions()){
+			s.getView().updateColor(DEFAULT_COLOR);
 		}
 		updateColor("white");
 	}
@@ -116,7 +114,7 @@ public class StepView{// extends HBox{
 			public void handle(MouseEvent event) {
 				if(event.getButton()==MouseButton.SECONDARY){//right click
 					//TODO toggle link, not just add
-					if(Link.createLink(GuiMain.selected.contents.getOriginRule(), StepView.this.contents, GuiMain.selected.contents)){
+					if(Step.createLink(GuiMain.selected.contents.getOriginRule(), StepView.this.contents, GuiMain.selected.contents)){
 						updateColor(PREMISE_COLOR);	
 					}
 					event.consume();

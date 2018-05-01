@@ -9,8 +9,8 @@ import gui.StepView;
 public class Step {
 
 	private AbstractStatement statement;
-	private Set<Link> premises;
-	private Set<Link> conclusions;
+	private Set<Step> premises;
+	private Set<Step> conclusions;
 	private StepView view;
 	private Branch parent;
 	private Rule origin;
@@ -19,8 +19,8 @@ public class Step {
 		this.view = view;
 		this.parent = parent;
 		parent.addStep(this);
-		premises = new HashSet<Link>();
-		conclusions = new HashSet<Link>();
+		premises = new HashSet<Step>();
+		conclusions = new HashSet<Step>();
 	}
 
 	public void setStatement(String inputString){ this.statement = AbstractStatement.createFromString(inputString); }
@@ -38,12 +38,9 @@ public class Step {
 		return isCheckedInBranch(parent);
 	}
 	
-	public Set<Link> getPremises() { return premises; }
-	public Set<Link> getConclusions() { return conclusions; }
-	
-	public void addPremiseLink(Link link){ premises.add(link); }
-	public void addConclusionLink(Link link){ conclusions.add(link); }
-	
+	public Set<Step> getPremises() { return premises; }
+	public Set<Step> getConclusions() { return conclusions; }
+		
 	public StepView getView(){ return view; }
 
 	public Rule getOriginRule(){ return origin; }
@@ -89,10 +86,23 @@ public class Step {
 		return false; //TODO
 	}
 	
+	public static boolean createLink(Rule rule, Step premise, Step conclusion){
+		Branch conBranch = conclusion.getBranch();
+		Branch premBranch = premise.getBranch();
+		if(conBranch == premBranch && conBranch.isBefore(conclusion, premise)) return false;
+		while(conBranch != null && conBranch != premBranch) conBranch = conBranch.getParent();
+		if(conBranch == null) return false;
+		
+		//Link link = new Link(rule, premise, conclusion);
+		premise.conclusions.add(conclusion);
+		conclusion.premises.add(premise);
+		return true;
+	}
+	
 	public boolean decompRuleCheckedInBranch(Branch branch, Set<AbstractStatement> conjuncts){
-		for(Link l : conclusions){
-			if(l.getConclusion().parent == branch && conjuncts.contains(l.getConclusion().statement)){
-				conjuncts.remove(l.getConclusion().statement);
+		for(Step s : conclusions){
+			if(s.parent == branch && conjuncts.contains(s.statement)){
+				conjuncts.remove(s.statement);
 			}
 		}
 		if(conjuncts.isEmpty()) return true;

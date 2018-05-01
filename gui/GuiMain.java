@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -38,6 +39,7 @@ public class GuiMain extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Yggdrasil");
+        stage.getIcons().add(new Image("file:yggdrasil.png"));
         
         borderpane = new BorderPane();
         drawer = new Drawer();
