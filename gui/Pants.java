@@ -13,7 +13,7 @@ import javafx.scene.shape.Line;
 
 public class Pants extends VBox{
 
-	public static final double NODE_WIDTH = 130, NODE_SPACING = 5;
+	public static final double NODE_WIDTH = 150, NODE_SPACING = 5;
 
     Pants(Drawer drawer){
         button_width = (NODE_WIDTH / 3) - NODE_SPACING;
@@ -98,35 +98,35 @@ public class Pants extends VBox{
     }
 
     private void updateChildLocations(){
-			// Consider the number of statements in the parent node (this) and shift the children down accordingly.
-			// Consider the number of children the parent contains and set their X coordinates accordingly, relative to the parent.
-			// Recursively call this on all children of children of the parent(this).
-			double starting_x = visual.getLayoutX();
-							//visual.getLayoutX() - (((NODE_WIDTH + 30) * children.size())/3);
-			if (children.size() % 2 == 0){
-					starting_x -= (NODE_WIDTH / 2) + 30;
-					starting_x -= ((children.size() / 2) - 1.1) * (NODE_WIDTH + 30);
-			}
-			else{
-					starting_x -= (children.size() / 2) * (NODE_WIDTH + 30);
-			}
+            // Consider the number of statements in the parent node (this) and shift the children down accordingly.
+            // Consider the number of children the parent contains and set their X coordinates accordingly, relative to the parent.
+            // Recursively call this on all children of children of the parent(this).
+            double starting_x = visual.getLayoutX();
+                                            //visual.getLayoutX() - (((NODE_WIDTH + 30) * children.size())/3);
+            if (children.size() % 2 == 0){
+                            starting_x -= (NODE_WIDTH / 2) + 30;
+                            starting_x -= ((children.size() / 2) - 1.11) * (NODE_WIDTH + 30);
+            }
+            else{
+                            starting_x -= (children.size() / 2) * (NODE_WIDTH + 30);
+            }
 
-			for (int i = 0; i < children.size(); i++){
-					children.get(i).visual.setLayoutY(visual.getLayoutY() + 90 + (num_statements * 26));
-					// 26 is the height of each statement object;
-					children.get(i).visual.setLayoutX(starting_x);
-					starting_x += (NODE_WIDTH + 30);
+            for (int i = 0; i < children.size(); i++){
+                            children.get(i).visual.setLayoutY(visual.getLayoutY() + 90 + (num_statements * 26));
+                            // 26 is the height of each statement object;
+                            children.get(i).visual.setLayoutX(starting_x);
+                            starting_x += (NODE_WIDTH + 30);
 
-				 // Line line = new Line();
-					lines.get(i).setStartX(visual.getLayoutX() + (NODE_WIDTH / 2));
-					lines.get(i).setStartY(visual.getLayoutY() + 72 + (num_statements * 26));
-					lines.get(i).setEndX(children.get(i).visual.getLayoutX() + (NODE_WIDTH / 2));
-					lines.get(i).setEndY(children.get(i).visual.getLayoutY() + 5);
+                     // Line line = new Line();
+                            lines.get(i).setStartX(visual.getLayoutX() + (NODE_WIDTH / 2) + (NODE_SPACING * 2));
+                            lines.get(i).setStartY(visual.getLayoutY() + 72 + (num_statements * 26));
+                            lines.get(i).setEndX(children.get(i).visual.getLayoutX() + (NODE_WIDTH / 2) + (NODE_SPACING * 2));
+                            lines.get(i).setEndY(children.get(i).visual.getLayoutY() + 5);
 
-					if (!children.get(i).children.isEmpty()){
-							children.get(i).updateChildLocations();
-					}
-			}
+                            if (!children.get(i).children.isEmpty()){
+                                            children.get(i).updateChildLocations();
+                            }
+            }
     }
 
     public void addStatement(){

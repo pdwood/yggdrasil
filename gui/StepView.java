@@ -85,6 +85,8 @@ public class StepView{// extends HBox{
 	private HBox makeTextView(){
 		HBox row = new HBox();
 		row.setSpacing(0);
+                row.setPrefWidth(Pants.NODE_WIDTH - Pants.NODE_SPACING);
+                row.setMaxWidth(Pants.NODE_WIDTH - Pants.NODE_SPACING);
 
 		removebtn = new Button("X");
 		removebtn.setStyle("-fx-text-fill: crimson");
@@ -129,7 +131,7 @@ public class StepView{// extends HBox{
 	private MenuButton makeTextFieldMenus(){
 		rules_menu = new MenuButton();
 		rules_menu.setMinWidth(1);
-		rules_menu.setMaxWidth(23);
+		rules_menu.setPrefWidth(50);
 
 		/*ContextMenu ctx_menu = new ContextMenu();
         MenuItem select_st = new MenuItem("Select");
