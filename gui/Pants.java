@@ -1,7 +1,6 @@
 package gui;
 
-import java.util.Vector;
-
+import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -20,7 +19,8 @@ public class Pants extends VBox{
         statements = new VBox();
         statements.setSpacing(1);
         visual = makePants();
-        children = new Vector();
+        children = new ArrayList();
+				lines = new ArrayList();
         num_statements = 0;
         this.drawer = drawer;
     }
@@ -89,9 +89,11 @@ public class Pants extends VBox{
         Pants child = new Pants(drawer);
         children.addElement(child);
         child.visual.setLayoutX(visual.getLayoutX());
+				drawer.pane.getChildren().add(child.visual);
+				Line line = new Line();
+				lines.add(line);
+				drawer.pane.getChildren().add(line);
         updateChildLocations();
-
-        drawer.pane.getChildren().add(child.visual);
     }
 
     private void updateChildLocations(){
@@ -108,13 +110,20 @@ public class Pants extends VBox{
 					starting_x -= (children.size() / 2) * (NODE_WIDTH + 30);
 			}
 
-			for (Pants child : children){
-					child.visual.setLayoutY(visual.getLayoutY() + 90 + (num_statements * 26));
+			for (int i = 0; i < children.size(); i++){
+					children.get(i).visual.setLayoutY(visual.getLayoutY() + 90 + (num_statements * 26));
 					// 26 is the height of each statement object;
-					child.visual.setLayoutX(starting_x);
+					children.get(i).visual.setLayoutX(starting_x);
 					starting_x += (NODE_WIDTH + 30);
-					if (!child.children.isEmpty()){
-							child.updateChildLocations();
+
+				 // Line line = new Line();
+					lines.get(i).setStartX(visual.getLayoutX() + (NODE_WIDTH / 2));
+					lines.get(i).setStartY(visual.getLayoutY() + 72 + (num_statements * 26));
+					lines.get(i).setEndX(children.get(i).visual.getLayoutX() + (NODE_WIDTH / 2));
+					lines.get(i).setEndY(children.get(i).visual.getLayoutY() + 5);
+
+					if (!children.get(i).children.isEmpty()){
+							children.get(i).updateChildLocations();
 					}
 			}
     }
