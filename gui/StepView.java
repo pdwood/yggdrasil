@@ -1,5 +1,8 @@
 package gui;
 
+import java.nio.CharBuffer;
+import java.util.HashSet;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -11,7 +14,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-
+import logic.AbstractStatement;
+import logic.Conditional;
+import logic.Conjunction;
+import logic.Disjunction;
 import tree.Step;
 import tree.Link;
 import tree.Rule;
@@ -90,7 +96,16 @@ public class StepView{// extends HBox{
 		});
 		removebtn.setVisible(false);
 
-		text_box = new TextField("Enter Statement");
+		text_box = new TextField("Enter Statement"){
+			//http://fxexperience.com/2012/02/restricting-input-on-a-textfield/
+		    @Override public void replaceText(int start, int end, String text) {
+	            super.replaceText(start, end, replaceSymbols(text));
+		    }
+		 
+		    @Override public void replaceSelection(String text) {
+	            super.replaceSelection(replaceSymbols(text));
+		    }
+		};
 		text_box.setPrefWidth(Pants.NODE_WIDTH - 23);
 		text_box.setDisable(true);
 		//        text_box.setStyle("-fx-opacity: 1.0;");
@@ -164,6 +179,23 @@ public class StepView{// extends HBox{
 		rules_menu.getItems().addAll(premise, contr, decomp);
 		rules_menu.setVisible(false);
 		return rules_menu;
+	}
+	
+	private static String replaceSymbols(String text){
+		CharBuffer buf = CharBuffer.allocate(text.length());
+		for(int i=0; i<text.length(); ++i){
+			switch(text.charAt(i)){
+			case '&': buf.put('∧'); break;
+			case '|': buf.put('∨'); break;
+			case '$': buf.put('→'); break;
+			case '%': buf.put('↔'); break;
+			case '!': buf.put('¬'); break;
+			case '^': buf.put('⊥'); break;
+			default: buf.put(text.charAt(i));
+			}
+		}
+		buf.rewind();
+		return buf.toString();
 	}
 }
 
