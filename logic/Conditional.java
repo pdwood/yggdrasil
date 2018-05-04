@@ -3,6 +3,7 @@ package logic;
 import java.util.Set;
 
 public class Conditional extends AbstractStatement{
+	
 	public final AbstractStatement consequent;
 	public final AbstractStatement antecedent;
 	public boolean evaluate(Set<String> context){
@@ -16,5 +17,6 @@ public class Conditional extends AbstractStatement{
 	public Conditional(AbstractStatement a, AbstractStatement c){
 		this.antecedent=a;
 		this.consequent=c;
+		this.hash = 19*a.hashCode() + 17*c.hashCode();
 	}
 }

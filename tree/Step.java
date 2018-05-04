@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import logic.*;
 import gui.StepView;
+import javafx.util.Pair;
 
 public class Step {
 
@@ -14,6 +15,7 @@ public class Step {
 	private StepView view;
 	private Branch parent;
 	private Rule origin;
+	private Rule destination;
 	
 	public Step(StepView view, Branch parent){
 		this.view = view;
@@ -23,7 +25,7 @@ public class Step {
 		conclusions = new HashSet<Step>();
 	}
 
-	public void setStatement(String inputString){ this.statement = AbstractStatement.createFromString(inputString); }
+	public void setStatement(String inputString){ this.statement = AbstractStatement.createFromString(inputString); System.out.println(statement); }
 	public AbstractStatement getStatement(){ return statement; }
 	
 	public Branch getBranch(){ return parent; }
@@ -35,7 +37,8 @@ public class Step {
 	public boolean isChecked(){
 		if(statement instanceof logic.AtomicStatement || 
 				(statement instanceof Negation && ((Negation)statement).interior instanceof AtomicStatement)) return true;
-		return isCheckedInBranch(parent);
+		//return isCheckedInBranch(parent);
+		return false;
 	}
 	
 	public Set<Step> getPremises() { return premises; }
@@ -44,20 +47,59 @@ public class Step {
 	public StepView getView(){ return view; }
 
 	public Rule getOriginRule(){ return origin; }
+	public Rule getDestinationRule(){ return destination; }
 	
-	public boolean isCheckedInBranch(Branch branch){
-		// For reasons of time constraints, we are only going to have the standard truth tree rules.
-		// Yggdrasil will be extensible with more rules, after this function and a few others are rewritten.
+	public static boolean createLink(Rule rule, Step premise, Step conclusion){		
+		Branch conBranch = conclusion.getBranch();
+		Branch premBranch = premise.getBranch();
+		
+		boolean invert = false;
+		
+		if(conBranch == premBranch && conBranch.isBefore(conclusion, premise)) invert = true;
+		while(conBranch != null && conBranch != premBranch) conBranch = conBranch.getParent();
+		if(conBranch == null) invert = true;
+		
+		if(invert){
+			Step temp = conclusion;
+			conclusion = premise;
+			premise = temp;
+		}
+		
+		//Link link = new Link(rule, premise, conclusion);
+		premise.conclusions.add(conclusion);
+		conclusion.premises.add(premise);
+		return !invert;
+	}
+	public static void removeLink(Step a, Step b){
+		a.conclusions.remove(b);
+		b.premises.remove(a);
+		a.premises.remove(b);
+		b.conclusions.remove(a);
+	}
+
+
+	public Pair<Set<AbstractStatement>,Set<Step>> verify(){
+		AbstractStatement.printExpressionAsHierarchy(statement,"");
+		System.out.println("Statement type: "+statement.getClass());
+				
+		if(statement instanceof logic.AtomicStatement || (statement instanceof Negation && ((Negation)statement).interior instanceof AtomicStatement)){
+			return new Pair<Set<AbstractStatement>,Set<Step>> (new HashSet<AbstractStatement>(), new HashSet<Step>());
+		}
+		
+		
+		Set<AbstractStatement> remainingJuncts = null;
+		Set<Step> extraneousSteps = new HashSet<Step>(conclusions);
+		
 		if(statement instanceof Conjunction){
-			Set<AbstractStatement> conjuncts = new HashSet<AbstractStatement>(((Conjunction)statement).getConjuncts());
-			return decompRuleCheckedInBranch(branch, conjuncts); 
+			remainingJuncts = Rule.verifyDecompRule(extraneousSteps, parent,
+					new HashSet<AbstractStatement>(((Conjunction)statement).getConjuncts())); 
 		} else if(statement instanceof Disjunction){
-			Set<AbstractStatement> disjuncts = new HashSet<AbstractStatement>(((Disjunction)statement).getDisjuncts());
-			return splitRuleCheckedInBranch(branch, disjuncts); 
+			remainingJuncts = Rule.verifySplitRule(extraneousSteps, parent,
+					new HashSet<AbstractStatement>(((Disjunction)statement).getDisjuncts()));  
 		} else if(statement instanceof Conditional){
 			Conditional cond = (Conditional) statement;
-			Set<AbstractStatement> disjuncts = new HashSet<AbstractStatement>(Arrays.asList(new Negation(cond.antecedent),cond.consequent));
-			return splitRuleCheckedInBranch(branch, disjuncts); 
+			remainingJuncts = Rule.verifySplitRule(extraneousSteps, parent,
+					new HashSet<AbstractStatement>(Arrays.asList(new Negation(cond.antecedent),cond.consequent))); 
 		} else if(statement instanceof Negation) {
 			AbstractStatement interior = ((Negation)statement).interior;
 			if(interior instanceof Conjunction){
@@ -65,52 +107,25 @@ public class Step {
 				for(AbstractStatement s : ((Conjunction)interior).getConjuncts()){
 					disjuncts.add(new Negation(s));
 				}
-				return splitRuleCheckedInBranch(branch, disjuncts); 
+				remainingJuncts = Rule.verifySplitRule(extraneousSteps, getBranch(), disjuncts); 
 			} else if(interior instanceof Disjunction){
+				System.out.println("NOR...");
 				Set<AbstractStatement> conjuncts = new HashSet<AbstractStatement>();
 				for(AbstractStatement s : ((Disjunction)interior).getDisjuncts()){
 					conjuncts.add(new Negation(s));
 				}
-				return decompRuleCheckedInBranch(branch, conjuncts); 
+				remainingJuncts = Rule.verifyDecompRule(extraneousSteps, getBranch(), conjuncts); 
 			} else if(interior instanceof Conditional){
 				Conditional cond = (Conditional) interior;
-				Set<AbstractStatement> conjuncts = new HashSet<AbstractStatement>(Arrays.asList(cond.antecedent, new Negation(cond.consequent)));
-				return decompRuleCheckedInBranch(branch, conjuncts); 
+				remainingJuncts = Rule.verifyDecompRule(extraneousSteps, getBranch(),
+						new HashSet<AbstractStatement>(Arrays.asList(cond.antecedent, new Negation(cond.consequent)))); 
 			}
 		}
-		//none of the above?
-		return true;// ? or false?
-	}
-	
-	public boolean splitRuleCheckedInBranch(Branch branch, Set<AbstractStatement> disjuncts){
-		return false; //TODO
-	}
-	
-	public static boolean createLink(Rule rule, Step premise, Step conclusion){
-		Branch conBranch = conclusion.getBranch();
-		Branch premBranch = premise.getBranch();
-		if(conBranch == premBranch && conBranch.isBefore(conclusion, premise)) return false;
-		while(conBranch != null && conBranch != premBranch) conBranch = conBranch.getParent();
-		if(conBranch == null) return false;
 		
-		//Link link = new Link(rule, premise, conclusion);
-		premise.conclusions.add(conclusion);
-		conclusion.premises.add(premise);
-		return true;
+		return new Pair<Set<AbstractStatement>,Set<Step>> (remainingJuncts, extraneousSteps);
 	}
 	
-	public boolean decompRuleCheckedInBranch(Branch branch, Set<AbstractStatement> conjuncts){
-		for(Step s : conclusions){
-			if(s.parent == branch && conjuncts.contains(s.statement)){
-				conjuncts.remove(s.statement);
-			}
-		}
-		if(conjuncts.isEmpty()) return true;
-		else if(branch.getBranches().isEmpty()) return false; // some conjuncts remain, but no branches left
-		
-		for(Branch b : branch.getBranches()){
-			if(!decompRuleCheckedInBranch(b, new HashSet<AbstractStatement>(conjuncts))) return false;
-		}
-		return true;
+	public boolean hasPremise(Step premise) {
+		return premises.contains(premise);
 	}
 }

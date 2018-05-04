@@ -7,6 +7,7 @@ public class Negation extends AbstractStatement{
 	
 	public Negation(AbstractStatement interior){
 		this.interior = interior;
+		this.hash = interior.hashCode()*2;
 	}
 	
 	public boolean evaluate(Set<String> context){

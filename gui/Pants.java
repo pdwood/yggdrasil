@@ -14,7 +14,7 @@ import tree.Branch;
 
 public class Pants extends VBox{
 
-	public static final double NODE_WIDTH = 150, NODE_SPACING = 5;
+	public static final double NODE_WIDTH = 200, NODE_SPACING = 5;
 
     Pants(Drawer drawer, Branch branch){
     	this.contents = branch; 

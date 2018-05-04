@@ -5,6 +5,8 @@ import java.util.Set;
 public class Disjunction extends AbstractStatement{
 	public Disjunction(Set<AbstractStatement> disjuncts){
 		this.disjuncts = disjuncts;
+		for(AbstractStatement as : disjuncts) this.hash += as.hashCode();
+		hash *= 41;
 	}
 	
 	private Set<AbstractStatement> disjuncts;

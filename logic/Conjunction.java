@@ -7,6 +7,8 @@ public class Conjunction extends AbstractStatement{
 	
 	public Conjunction(Set<AbstractStatement> conjuncts){
 		this.conjuncts = conjuncts;
+		for(AbstractStatement as : conjuncts) this.hash += as.hashCode();
+		hash *= 37;
 	}
 
 	public boolean equals(Object o){

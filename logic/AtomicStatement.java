@@ -4,8 +4,9 @@ import java.util.Set;
 
 public class AtomicStatement extends AbstractStatement{
 	
-	public AtomicStatement(char c){
-		
+	public AtomicStatement(String s){
+		super(s);
+		this.hash = s.hashCode();
 	}
 	
 	public boolean evaluate(Set<String> context){
@@ -14,6 +15,6 @@ public class AtomicStatement extends AbstractStatement{
 	
 	@Override
 	public boolean equals(Object that){
-		return (that instanceof AtomicStatement && that.toString() == this.toString());
+		return (that instanceof AtomicStatement && that.toString().equals(this.toString()));
 	}
 }

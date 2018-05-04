@@ -13,29 +13,44 @@ public abstract class AbstractStatement{
 	//		
 	//	}
 	private String string;
+	public AbstractStatement(String string){
+		this.string = string;
+	}
+	public AbstractStatement(){}
+	
+	protected int hash;
+	
+	public int hashCode(){
+		return hash;
+	}
+	
+	public static final AbstractStatement FALSE = new AbstractStatement("⊥"){
 
-	public static final AbstractStatement FALSE = new AbstractStatement(){
+		@Override
+		boolean evaluate(Set<String> context) {
+			return false;
+		}
+	};
+
+	public static final AbstractStatement TRUE = new AbstractStatement(""){
 		@Override
 		boolean evaluate(Set<String> context) {
 			return false;
 		}		
 	};
 
-	public static final AbstractStatement TRUE = new AbstractStatement(){
-		@Override
-		boolean evaluate(Set<String> context) {
-			return false;
-		}		
-	};
-
-	static final HashSet<Character> OPERATORS = new HashSet<Character> ( Arrays.asList('&','|','$','%') );
+	static{
+		FALSE.hash = 1;
+	}
+	
+	static final HashSet<Character> OPERATORS = new HashSet<Character> ( Arrays.asList('∧','∨','→','%') );
 
 	private static String stripOuterParens(String s){
 		int outerParens = 0;
 		while(s.charAt(outerParens)=='(' && s.charAt(s.length()-1-outerParens)==')')++outerParens;
 		int parens = 0;
 		int minParens = 0;
-		for(int i=0;i<s.length(); ++i){
+		for(int i=outerParens;i<s.length()-outerParens; ++i){
 			if(s.charAt(i)=='(') ++parens;
 			else if(s.charAt(i)==')') --parens;
 			if(parens < minParens) minParens = parens;
@@ -57,7 +72,7 @@ public abstract class AbstractStatement{
 		return s.substring(start, start+length);
 	}
 
-	private static AbstractStatement createFromTransformedString(String s){
+	public static AbstractStatement createFromString(String s){
 		System.out.println("Creating from: "+s);
 
 		//Strip parentheses surrounding the entire expression.
@@ -72,7 +87,7 @@ public abstract class AbstractStatement{
 			if (c == '('){
 				String parenString = enclosedParenString(s,i);
 				juncts.add(createFromString(parenString));
-				i+=parenString.length();
+				i+=parenString.length()-1;
 			}
 			else if(c == '¬'){
 				i+=1;
@@ -83,8 +98,7 @@ public abstract class AbstractStatement{
 				if(operator == 0) operator = c;
 				if(c != operator) return null; //or, throw new SyntaxException("Ambiguous form in statement "+s);					
 			}else{ //atomic statement
-				AbstractStatement as = new AtomicStatement(c);
-				as.string = c+"";
+				AbstractStatement as = new AtomicStatement(c+"");
 				juncts.add(as);
 
 			}
@@ -111,7 +125,7 @@ public abstract class AbstractStatement{
 		return out;
 	}
 	
-	public static AbstractStatement createFromString(String s){
+	/*public static AbstractStatement createFromString(String s){
 		String newS = "";
 		for(int i=0;i<s.length();++i){
 			switch(s.charAt(i)){
@@ -125,9 +139,35 @@ public abstract class AbstractStatement{
 			}
 		}
 		return createFromTransformedString(newS);
-	}
+	}*/
 
 	@Override
 	public String toString() {return string;}
 
+	
+
+	public static void printExpressionAsHierarchy(AbstractStatement as, String pad){
+		pad += '\t';
+		System.out.print(pad);
+		if(as instanceof AtomicStatement) System.out.println(as);
+		else if(as instanceof Conjunction){
+			System.out.println("and");
+			for(AbstractStatement as2 : ((Conjunction)as).getConjuncts()){
+				printExpressionAsHierarchy(as2, pad);
+			}
+		}else if(as instanceof Disjunction){
+			System.out.println("or");
+			for(AbstractStatement as2 : ((Disjunction)as).getDisjuncts()){
+				printExpressionAsHierarchy(as2, pad);
+			}
+		}else if(as instanceof Negation){
+			System.out.println("not");
+			printExpressionAsHierarchy(((Negation)as).getInterior(),pad);
+		}else if(as instanceof Conditional){
+			System.out.println("if");
+			printExpressionAsHierarchy(((Conditional)as).antecedent,pad);
+			printExpressionAsHierarchy(((Conditional)as).consequent,pad);
+		}else if(as == AbstractStatement.FALSE) System.out.println("false");
+		else if(as == AbstractStatement.TRUE) System.out.println("true");
+	}
 }

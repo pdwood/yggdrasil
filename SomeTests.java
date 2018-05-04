@@ -3,7 +3,8 @@ import logic.*;
 public class SomeTests {
 
 	public static void main(String[] args) {
-		printExpressionAsHierarchy(AbstractStatement.createFromString("P&(Q|!R)&!(P$Q)"),"");
+		printExpressionAsHierarchy(AbstractStatement.createFromString("(Q∨¬R)∧P∧¬(P→Q)"),"");
+		printExpressionAsHierarchy(AbstractStatement.createFromString("(P∨Q)∧(R→S)"),"");
 	}
 
 	public static void printExpressionAsHierarchy(AbstractStatement as, String pad){
